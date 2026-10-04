@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credit Scorecard — 20 Day Study Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9ECF0;
+    --card:#FFFFFF;
+    --ink:#0F1A24;
+    --muted:#5C6B7A;
+    --rule:#D2D8DF;
+    --approve:#0F6A52;
+    --watch:#9A6412;
+    --decline:#973033;
+    --band-fill:#0F6A52;
+    --shadow:0 1px 0 rgba(15,26,36,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0D141B;
+      --card:#151E27;
+      --ink:#E6EBF0;
+      --muted:#93A1AF;
+      --rule:#27323D;
+      --approve:#4CBF9C;
+      --watch:#D9A254;
+      --decline:#D97076;
+      --band-fill:#4CBF9C;
+      --shadow:0 1px 0 rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0D141B;
+    --card:#151E27;
+    --ink:#E6EBF0;
+    --muted:#93A1AF;
+    --rule:#27323D;
+    --approve:#4CBF9C;
+    --watch:#D9A254;
+    --decline:#D97076;
+    --band-fill:#4CBF9C;
+    --shadow:0 1px 0 rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Archivo","Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    font-variant-numeric:tabular-nums;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:28px 18px 72px}
+
+  header{margin-bottom:22px}
+  h1{font-size:clamp(24px,5vw,34px);font-weight:700;letter-spacing:-.02em;margin:0 0 6px;line-height:1.15}
+  .sub{color:var(--muted);margin:0;max-width:62ch}
+  .sub code{font-family:inherit;font-weight:600;color:var(--ink)}
+
+  /* score panel */
+  .panel{
+    background:var(--card);border:1px solid var(--rule);border-radius:10px;
+    padding:20px;margin:22px 0 30px;box-shadow:var(--shadow);
+  }
+  .score-row{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .score{font-size:clamp(46px,12vw,64px);font-weight:700;line-height:.95;letter-spacing:-.03em}
+  .band{font-weight:600;color:var(--band-fill)}
+  .score-note{color:var(--muted);font-size:14px;margin-left:auto}
+  .gauge{margin-top:16px;height:9px;border-radius:5px;background:linear-gradient(90deg,var(--decline),var(--watch),var(--approve));position:relative;opacity:.28}
+  .gauge-mask{position:absolute;top:0;right:0;bottom:0;background:var(--card);border-radius:0 5px 5px 0;transition:width .35s ease}
+  .ticks{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:6px}
+  @media (prefers-reduced-motion: reduce){.gauge-mask{transition:none}}
+
+  /* weeks + days */
+  .week{margin:34px 0 0}
+  .week-head{display:flex;align-items:baseline;gap:10px;border-bottom:2px solid var(--ink);padding-bottom:6px;margin-bottom:2px}
+  .week-head h2{font-size:17px;font-weight:700;margin:0;letter-spacing:-.01em}
+  .week-head span{color:var(--muted);font-size:13px;margin-left:auto}
+
+  .day{display:grid;grid-template-columns:52px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid var(--rule)}
+  .daynum{font-weight:700;font-size:13px;color:var(--muted);padding-top:2px}
+  .daynum b{display:block;font-size:22px;color:var(--ink);line-height:1}
+  .daytitle{font-weight:600;margin:0 0 9px}
+  ul{list-style:none;margin:0;padding:0}
+  li{display:flex;gap:9px;padding:5px 0;align-items:flex-start}
+  li input{margin:3px 0 0;width:15px;height:15px;accent-color:var(--approve);flex:none;cursor:pointer}
+  li label{cursor:pointer;flex:1}
+  li a{color:inherit;text-decoration-color:var(--muted);text-underline-offset:2px}
+  li a:hover{text-decoration-color:var(--ink)}
+  .tag{color:var(--muted);font-size:13px}
+  li.done label{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--rule)}
+  .why{color:var(--muted);font-size:13.5px;margin:9px 0 0;padding-left:11px;border-left:2px solid var(--rule)}
+  .why b{color:var(--ink);font-weight:600}
+
+  footer{margin-top:40px;color:var(--muted);font-size:13.5px}
+  footer h2{font-size:17px;color:var(--ink);margin:0 0 10px}
+  footer ol{padding-left:18px;margin:0 0 18px}
+  footer li{display:list-item;padding:3px 0}
+  button{
+    font:inherit;font-weight:500;color:var(--muted);background:transparent;
+    border:1px solid var(--rule);border-radius:6px;padding:7px 13px;cursor:pointer;
+  }
+  button:hover{color:var(--ink);border-color:var(--muted)}
+  :focus-visible{outline:2px solid var(--approve);outline-offset:2px}
+  @media (max-width:520px){
+    .day{grid-template-columns:40px 1fr;gap:10px}
+    .score-note{margin-left:0;width:100%}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Credit Scorecard — 20 din ka plan</h1>
+  <p class="sub">CampusX 100 Days of ML se lekar WOE binning, PSI aur scorecard scaling tak — sab kuch jo <code>main.py</code> mein likha hai. Roz 2–3 videos. Tick karte jaao.</p>
+</header>
+
+<div class="panel">
+  <div class="score-row">
+    <div class="score" id="score">300</div>
+    <div class="band" id="band">Just applied</div>
+    <div class="score-note" id="count">0 of 0 done</div>
+  </div>
+  <div class="gauge"><div class="gauge-mask" id="mask" style="width:100%"></div></div>
+  <div class="ticks"><span>300</span><span>580</span><span>670</span><span>740</span><span>850</span></div>
+</div>
+
+<section class="week">
+  <div class="week-head"><h2>Week 1 — Logistic regression, tera main model</h2><span>Day 1–6</span></div>
+
+  <div class="day">
+    <div class="daynum"><b>1</b>Mon</div>
+    <div>
+      <p class="daytitle">Overfitting aur L2 penalty</p>
+      <ul>
+        <li><input type="checkbox" id="v1"><label for="v1"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 61 — Bias Variance Trade-off</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v2"><label for="v2"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 62 — Ridge Regression Part 1 (geometric intuition)</a> <span class="tag">playlist</span></label></li>
+      </ul>
+      <p class="why">Tere code mein: <b>penalty="l2", C=1.0</b>. Ridge hi L2 hai — C chhota karoge to penalty strong, coefficients shrink.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>2</b>Tue</div>
+    <div>
+      <p class="daytitle">Logistic regression ki buniyaad</p>
+      <ul>
+        <li><input type="checkbox" id="v3"><label for="v3"><a href="https://www.youtube.com/watch?v=XNXzVfItWGY" target="_blank" rel="noopener">Day 69 — Part 1: Perceptron Trick</a></label></li>
+        <li><input type="checkbox" id="v4"><label for="v4"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 70 — Part 2: Perceptron Trick code</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v5"><label for="v5"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 71 — Part 3: Sigmoid Function</a> <span class="tag">playlist</span></label></li>
+      </ul>
+      <p class="why">Sigmoid ka inverse = log-odds. Yahi wo jagah hai jahan se scorecard ke points nikalte hain — Day 17 pe kaam aayega.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>3</b>Wed</div>
+    <div>
+      <p class="daytitle">Loss function aur gradient descent</p>
+      <ul>
+        <li><input type="checkbox" id="v6"><label for="v6"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 72 — Part 4: Maximum Likelihood, Binary Cross Entropy</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v7"><label for="v7"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 74 — Part 5: Gradient Descent, code from scratch</a> <span class="tag">playlist</span></label></li>
+      </ul>
+      <p class="why">Bhaari din hai. MLE wala derivation ek baar copy pe khud likh ke dekh — interview mein yahi poochha jaata hai.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>4</b>Thu</div>
+    <div>
+      <p class="daytitle">Hyperparameters aur classification metrics</p>
+      <ul>
+        <li><input type="checkbox" id="v8"><label for="v8"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 79 — Logistic Regression Hyperparameters</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v9"><label for="v9"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 75 — Accuracy, Confusion Matrix, Type 1/2 errors</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v10"><label for="v10"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 76 — Precision, Recall, F1</a> <span class="tag">playlist</span></label></li>
+      </ul>
+      <p class="why">Day 79 tere exact call ko cover karta hai: <b>C, penalty, solver, class_weight</b>. Aur 75–76 se tera <b>classification_report</b> padhna aa jayega — lending mein recall &gt; accuracy, kyunki ek missed defaulter mehnga padta hai.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>5</b>Fri</div>
+    <div>
+      <p class="daytitle">ROC-AUC aur imbalanced data</p>
+      <ul>
+        <li><input type="checkbox" id="v11"><label for="v11"><a href="https://www.youtube.com/watch?v=gdW6hj9IXaA" target="_blank" rel="noopener">Day 134 — ROC Curve | ROC-AUC simplified</a></label></li>
+        <li><input type="checkbox" id="v12"><label for="v12"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 132 — Imbalanced Data: undersampling, oversampling, SMOTE</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v13"><label for="v13">Apna <b>02_ks_chart.png</b> khol ke KS khud derive karo</label></li>
+      </ul>
+      <p class="why">KS ka alag video nahi chahiye — wo ROC ka hi cousin hai: cumulative good vs cumulative bad ka max gap. Gini = 2×AUC − 1, jo tera code already print karta hai.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>6</b>Sat</div>
+    <div>
+      <p class="daytitle">Decision trees — har boosting ka base</p>
+      <ul>
+        <li><input type="checkbox" id="v14"><label for="v14"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 80 — Decision Trees: entropy, gini, information gain</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v15"><label for="v15"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 81 — Decision Tree hyperparameters</a> <span class="tag">playlist</span></label></li>
+      </ul>
+      <p class="why">Bonus: <b>sc.woebin()</b> ka default method bhi tree-based splitting hai. Yeh video WOE binning ke andar ka mechanism samjha dega.</p>
+    </div>
+  </div>
+</section>
+
+<section class="week">
+  <div class="week-head"><h2>Week 2 — Ensembles se XGBoost tak</h2><span>Day 7–13</span></div>
+
+  <div class="day">
+    <div class="daynum"><b>7</b>Sun</div>
+    <div>
+      <p class="daytitle">Ensemble learning ki neev</p>
+      <ul>
+        <li><input type="checkbox" id="v16"><label for="v16"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 84 — Introduction to Ensemble Learning</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v17"><label for="v17"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 102 — Bagging vs Boosting</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v18"><label for="v18"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 98 — AdaBoost: geometric intuition</a> <span class="tag">playlist</span></label></li>
+      </ul>
+      <p class="why">Bagging vs boosting ka farak interview ka pakka sawaal hai. Ek line mein taiyaar rakho.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>8</b>Mon</div>
+    <div>
+      <p class="daytitle">Gradient boosting</p>
+      <ul>
+        <li><input type="checkbox" id="v19"><label for="v19"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 106 — Gradient Boosting explained</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v20"><label for="v20"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 107 — Gradient Boosting Regression Part 2: maths</a> <span class="tag">playlist</span></label></li>
+      </ul>
+      <p class="why">Residuals pe tree fit karna — yahi XGBoost ka core idea hai, XGBoost bas isko fast aur regularized banata hai.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>9</b>Tue</div>
+    <div>
+      <p class="daytitle">GB classification aur XGBoost shuru</p>
+      <ul>
+        <li><input type="checkbox" id="v21"><label for="v21"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 108 — Gradient Boosting for Classification</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v22"><label for="v22"><a href="https://www.youtube.com/watch?v=C6aDw4y8qJ0" target="_blank" rel="noopener">Day 127 — Introduction to XGBoost</a></label></li>
+      </ul>
+      <p class="why">Tera challenger model yahan se start hota hai.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>10</b>Wed</div>
+    <div>
+      <p class="daytitle">XGBoost — regression aur classification</p>
+      <ul>
+        <li><input type="checkbox" id="v23"><label for="v23"><a href="https://www.youtube.com/watch?v=gmp2tS2joaA" target="_blank" rel="noopener">Day 128 — XGBoost for Regression</a></label></li>
+        <li><input type="checkbox" id="v24"><label for="v24"><a href="https://www.youtube.com/watch?v=mELtxVUNNrw" target="_blank" rel="noopener">Day 129 — XGBoost for Classification</a></label></li>
+      </ul>
+      <p class="why">Classification wala tera exact use case hai — <b>XGBClassifier</b> with <b>scale_pos_weight</b>.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>11</b>Thu</div>
+    <div>
+      <p class="daytitle">XGBoost ki maths aur tuning</p>
+      <ul>
+        <li><input type="checkbox" id="v25"><label for="v25"><a href="https://www.youtube.com/watch?v=0Eo-_5bfers" target="_blank" rel="noopener">Day 130 — Maths behind XGBoost</a></label></li>
+        <li><input type="checkbox" id="v26"><label for="v26"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 95 — GridSearchCV / RandomizedSearchCV</a> <span class="tag">playlist</span></label></li>
+      </ul>
+      <p class="why">Day 130 ke baad tere <b>max_depth=4, learning_rate=0.01, subsample=0.8</b> ka matlab samajh aayega — abhi ye numbers bas copy-paste hain, defend nahi kar paoge.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>12</b>Fri</div>
+    <div>
+      <p class="daytitle">Correlation aur multicollinearity</p>
+      <ul>
+        <li><input type="checkbox" id="v27"><label for="v27"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 21 — EDA: bivariate & multivariate analysis</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v28"><label for="v28"><a href="https://www.youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH" target="_blank" rel="noopener">Day 112 — Assumptions of Linear Regression (multicollinearity)</a> <span class="tag">playlist</span></label></li>
+      </ul>
+      <p class="why">Tera <b>upper[column] &gt; 0.60</b> drop wala block yahi hai. Industry mein iske saath VIF bhi use hota hai — 0.60 threshold arbitrary hai, ye maan lena chahiye agar koi poochhe.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>13</b>Sat</div>
+    <div>
+      <p class="daytitle">Buffer — apne code pe wapas</p>
+      <ul>
+        <li><input type="checkbox" id="v29"><label for="v29">Script dobara chalao, <b>lr.coef_</b> print karke har feature ka sign check karo</label></li>
+        <li><input type="checkbox" id="v30"><label for="v30">Pichhle hafte ka koi chhoota hua video</label></li>
+      </ul>
+      <p class="why">WOE ke baad saare coefficients ka sign ek hi direction mein hona chahiye. Agar koi ulta hai — wo variable business logic ke khilaaf ja raha hai, usse hatana padta hai.</p>
+    </div>
+  </div>
+</section>
+
+<section class="week">
+  <div class="week-head"><h2>Week 3 — Credit risk domain, CampusX se bahar</h2><span>Day 14–20</span></div>
+
+  <div class="day">
+    <div class="daynum"><b>14</b>Sun</div>
+    <div>
+      <p class="daytitle">WOE aur Information Value</p>
+      <ul>
+        <li><input type="checkbox" id="v31"><label for="v31"><a href="https://github.com/shichenxie/scorecardpy" target="_blank" rel="noopener">scorecardpy README pura padho</a> <span class="tag">30 min</span></label></li>
+        <li><input type="checkbox" id="v32"><label for="v32"><a href="https://ucanalytics.com/blogs/information-value-and-weight-of-evidencebanking-case/" target="_blank" rel="noopener">ucanalytics — IV & WOE banking case study</a> <span class="tag">blog</span></label></li>
+        <li><input type="checkbox" id="v33"><label for="v33">Ek variable ka WOE Excel/notebook pe haath se calculate karo</label></li>
+      </ul>
+      <p class="why">WOE = ln(% non-events ÷ % events) per bin. IV = poore variable ki predictive power. Rule of thumb: IV &lt; 0.02 bekaar, 0.1–0.3 medium, &gt; 0.5 shak karo (leakage ho sakta hai).</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>15</b>Mon</div>
+    <div>
+      <p class="daytitle">Credit risk modelling — hands-on series</p>
+      <ul>
+        <li><input type="checkbox" id="v34"><label for="v34"><a href="https://www.youtube.com/playlist?list=PLHPuG1bQvaJGTnmTp8nbNfEzcU9dT8jKQ" target="_blank" rel="noopener">Credit Risk Modeling in Python — videos 1–3</a> <span class="tag">playlist</span></label></li>
+      </ul>
+      <p class="why">Data prep, target definition (kaun "bad" hai — 90+ DPD), aur sampling window. Yeh part tere project se missing hai kyunki germancredit mein target ready-made aata hai.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>16</b>Tue</div>
+    <div>
+      <p class="daytitle">Fine classing, coarse classing, monotonic binning</p>
+      <ul>
+        <li><input type="checkbox" id="v35"><label for="v35"><a href="https://www.youtube.com/playlist?list=PLSseXx7oLELFwqKGudRoSMp1ZwnruEdzF" target="_blank" rel="noopener">Development of Scorecards — binning wale videos (2–3)</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v36"><label for="v36">Apne code mein <b>sc.woebin_plot(bins)</b> chala ke har bin dekho</label></li>
+      </ul>
+      <p class="why">Tere paas <b>min_perc_fine_bin=0.05</b> hai par <b>woebin_adj</b> nahi. Real scorecard mein bins manually adjust hote hain taaki bad rate monotonic rahe — ye sabse bada gap hai tere pipeline mein.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>17</b>Wed</div>
+    <div>
+      <p class="daytitle">Scorecard scaling — points0, odds0, PDO</p>
+      <ul>
+        <li><input type="checkbox" id="v37"><label for="v37"><a href="https://www.youtube.com/playlist?list=PLSseXx7oLELFwqKGudRoSMp1ZwnruEdzF" target="_blank" rel="noopener">Scorecard scaling / points allocation videos (2)</a> <span class="tag">playlist</span></label></li>
+        <li><input type="checkbox" id="v38"><label for="v38">Factor aur Offset formula khud derive karo, ek bin ke points haath se nikalo</label></li>
+      </ul>
+      <p class="why">Tere paas <b>points0=600, odds0=1/19, pdo=50</b> hai. Matlab: 600 points pe odds 1:19, aur har 50 points pe odds double. Factor = PDO ÷ ln(2). Ye derive karna aana chahiye — points aasman se nahi girte.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>18</b>Thu</div>
+    <div>
+      <p class="daytitle">PSI aur model monitoring</p>
+      <ul>
+        <li><input type="checkbox" id="v39"><label for="v39"><a href="https://www.youtube.com/watch?v=iWJcITAge-c" target="_blank" rel="noopener">PSI for Scorecards in Python (Part 13)</a></label></li>
+        <li><input type="checkbox" id="v40"><label for="v40"><a href="https://www.youtube.com/watch?v=r4W90z2LyyA" target="_blank" rel="noopener">Population Stability Index in Credit Scoring</a></label></li>
+        <li><input type="checkbox" id="v41"><label for="v41"><a href="https://ucanalytics.com/blogs/population-stability-index-psi-banking-case-study/" target="_blank" rel="noopener">ucanalytics — PSI banking case</a> <span class="tag">blog</span></label></li>
+      </ul>
+      <p class="why">Thresholds yaad karo: PSI &lt; 0.1 stable, 0.1–0.25 watch, &gt; 0.25 model rebuild. CSI bhi dekh lo — wo variable-level PSI hai, tere code mein nahi hai.</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>19</b>Fri</div>
+    <div>
+      <p class="daytitle">Industry reference</p>
+      <ul>
+        <li><input type="checkbox" id="v42"><label for="v42">Naeem Siddiqi — <i>Credit Risk Scorecards</i>, ch. 4–6 skim</label></li>
+        <li><input type="checkbox" id="v43"><label for="v43">Reject inference aur vintage analysis — sirf concept level pe padho</label></li>
+      </ul>
+      <p class="why">Ye kitaab hi wo source hai jahan se saare blogs copy hote hain. Do cheezein tere project mein nahi hain aur interviewer poochhega: reject inference (jinko loan mila hi nahi unka kya) aur out-of-time validation (tera split random hai, time-based nahi).</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="daynum"><b>20</b>Sat</div>
+    <div>
+      <p class="daytitle">Likho aur defend karo</p>
+      <ul>
+        <li><input type="checkbox" id="v44"><label for="v44">Repo ka README likho — pipeline, metrics, limitations</label></li>
+        <li><input type="checkbox" id="v45"><label for="v45">Neeche wale 8 sawaalon ke jawab bol ke practice karo</label></li>
+      </ul>
+      <p class="why">Limitations section zaroor daalna. 1000 rows ka dataset hai, PSI train-vs-test pe nikala hai (out-of-time nahi) — ye khud bata dena hamesha better hai.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <h2>Jo sawaal pakka aayenge</h2>
+  <ol>
+    <li>WOE use hi kyun kiya, one-hot encoding se kya problem thi?</li>
+    <li>Binning ke baad information loss hota hai — phir bhi kyun karte ho?</li>
+    <li>IV 0.5 se upar aa jaye to shak kyun karna chahiye?</li>
+    <li>WOE binning split ke baad kyun kiya, pehle kyun nahi?</li>
+    <li>XGBoost ka AUC zyada hai to production mein logistic regression hi kyun bhejoge?</li>
+    <li>PDO 50 ka business matlab kya hai?</li>
+    <li>PSI 0.25 se upar chala jaaye to kya karoge?</li>
+    <li>Optimal cutoff Youden's J se nikala — bank isse alag kyun choose karega?</li>
+  </ol>
+  <button id="reset">Clear all ticks</button>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var KEY = "scorecard-plan-v1";
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('input[type=checkbox]'));
+  var scoreEl = document.getElementById('score');
+  var bandEl  = document.getElementById('band');
+  var countEl = document.getElementById('count');
+  var maskEl  = document.getElementById('mask');
+
+  function load(){
+    try {
+      var raw = localStorage.getItem(KEY);
+      if(!raw) return {};
+      return JSON.parse(raw) || {};
+    } catch(e){ return {}; }
+  }
+  function save(state){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  }
+
+  function bandFor(s){
+    if(s >= 800) return "Excellent";
+    if(s >= 740) return "Very good";
+    if(s >= 670) return "Good";
+    if(s >= 580) return "Fair";
+    if(s > 300)  return "Building";
+    return "Just applied";
+  }
+
+  function render(){
+    var done = 0;
+    boxes.forEach(function(b){
+      var li = b.closest('li');
+      if(b.checked){ done++; li.classList.add('done'); }
+      else { li.classList.remove('done'); }
+    });
+    var pct = boxes.length ? done / boxes.length : 0;
+    var score = Math.round(300 + pct * 550);
+    scoreEl.textContent = score;
+    bandEl.textContent = bandFor(score);
+    countEl.textContent = done + " of " + boxes.length + " done";
+    maskEl.style.width = ((1 - pct) * 100) + "%";
+  }
+
+  var state = load();
+  boxes.forEach(function(b){
+    if(state[b.id]) b.checked = true;
+    b.addEventListener('change', function(){
+      state[b.id] = b.checked;
+      save(state);
+      render();
+    });
+  });
+
+  document.getElementById('reset').addEventListener('click', function(){
+    boxes.forEach(function(b){ b.checked = false; });
+    state = {};
+    save(state);
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
